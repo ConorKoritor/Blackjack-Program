@@ -11,14 +11,14 @@ namespace Players
     internal class Player
     {
         private string Name {  get; set; }
-        private int Money {  get; set; }
+        private decimal Money {  get; set; }
         public List<Card> Hand = new List<Card>();
         public List<Card> SplitHand = new List<Card>();
         protected int CardTotal {  get; set; }
         protected int ActualCardTotal {  get; set; }
         public bool IsBust = false;
         public bool IsBlackjack = false;
-        private int Bet;
+        private decimal Bet;
          
         public Player(int money, string name)
         {
@@ -140,7 +140,7 @@ namespace Players
 
         public void DisplayBet()
         {
-            Console.WriteLine($"\nCurrent Bet: ${Bet}");
+            Console.WriteLine(String.Format("\nCurrent Bet: {0:C2}", Bet));
         }
 
         public void CalculateHandTotal()
@@ -180,13 +180,13 @@ namespace Players
             Console.Clear();
 
 
-            int bet = 0;
+            decimal bet = 0;
             bool incorrectEntry;
 
             do
             {
                 incorrectEntry = false;
-                Console.WriteLine($"{Name} Has ${Money} left to bet.");
+                Console.WriteLine(String.Format("{0} Has {1:C2} left to bet.", Name, Money));
                 Console.Write($"{Name}, How Much Would You Like to Bet on this Hand: ");
 
                 try
@@ -234,7 +234,7 @@ namespace Players
             return CardTotal;
         }
 
-        public int GetMoney()
+        public decimal GetMoney()
         {
             return Money;
         }
@@ -243,16 +243,16 @@ namespace Players
         {
             Money += Bet;
             Console.WriteLine();
-            Console.WriteLine($"{Name} Won ${Bet}!");
-            Console.WriteLine($"{Name} Total Money is now: ${Money}");
+            Console.WriteLine(String.Format("{0} Won {1:C2}!", Name, Bet));
+            Console.WriteLine(String.Format("{0} Total Money is now: {1:C2}", Name, Money));
         }
 
         public void Lose()
         {
             Money -= Bet;
             Console.WriteLine();
-            Console.WriteLine($"{Name} Lost ${Bet}.");
-            Console.WriteLine($"{Name} Total Money is now: ${Money}");
+            Console.WriteLine(String.Format("{0} Lost {1:C2}!", Name, Bet));
+            Console.WriteLine(String.Format("{0} Total Money is now: {1:C2}", Name, Money));
         }
 
         public void Push()
@@ -262,14 +262,14 @@ namespace Players
                 Console.WriteLine();
                 Console.WriteLine($"{Name} and the Dealer both hit Blackjack");
                 Console.WriteLine($"{Name}'s Bet was Returned");
-                Console.WriteLine($"{Name} Total Money is now: ${Money}");
+                Console.WriteLine(String.Format("{0} Total Money is now: {1:C2}", Name, Money));
             }
             else
             {
                 Console.WriteLine();
                 Console.WriteLine($"{Name} and the Dealer both stayed on the Same Card Total");
                 Console.WriteLine($"{Name}'s Bet was Returned");
-                Console.WriteLine($"{Name} Total Money is now: ${Money}");
+                Console.WriteLine(String.Format("{0} Total Money is now: {1:C2}", Name, Money));
             }
         }
 
@@ -283,11 +283,11 @@ namespace Players
 
         public void BlackJack()
         {
-            Money += (Bet * 2);
+            Money += (Bet * (decimal)1.5);
             Console.WriteLine();
             Console.WriteLine("Blackjack!");
-            Console.WriteLine($"{Name} Won ${Bet * 2}!");
-            Console.WriteLine($"{Name} Total Money is now: ${Money}");
+            Console.WriteLine(String.Format("{0} Won {1:C2}!", Name, Bet * (decimal)1.5));
+            Console.WriteLine(String.Format("{0} Total Money is now: {1:C2}", Name, Money));
         }
 
         public void Reset()
@@ -303,7 +303,7 @@ namespace Players
         public void CashOut()
         {
             Console.WriteLine($"Thank You For Playing {Name}!");
-            Console.WriteLine($"You are Cashing Out with ${Money}");
+            Console.WriteLine(String.Format("You are Cashing Out with {0:C2}", Money));
             Console.WriteLine("We Hope to see you again soon!");
         }
     }

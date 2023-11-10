@@ -29,8 +29,9 @@ namespace Players
         public virtual Dealer GameActions(Dealer dealer)
         {
             string playerAction = "";
-            string doubleDown;
+            string doubleDown = "";
             bool incorrectAction;
+            bool incorrectDoubleDown;
             bool continueActions;
 
             DisplayHand();
@@ -43,28 +44,59 @@ namespace Players
                 {
                     do
                     {
-                        incorrectAction = false;
+                        incorrectDoubleDown = false;
 
-                        Console.Write($"\n\n{Name} What Would You Like to do?");
-                        Console.Write("\n[h] to hit, [s] to stay, [d] to double down: ");
-                        playerAction = Console.ReadLine();
-                        playerAction.ToLower();
+                        Console.Write($"\n\n{Name} Would You Like to Double Down [y,n]?: ");
+                        doubleDown = Console.ReadLine();
+                        doubleDown.ToLower();
 
-                        if (playerAction == string.Empty)
+                        if (doubleDown == string.Empty)
                         {
-                            Console.Write("\nYou Didn't Enter an Answer. Please type [h], [s] or [d].\n");
+                            Console.Write("\nYou Didn't Enter an Answer. Please type [y/n].\n");
                             Console.Write("Press Enter to try again.");
                             Console.ReadKey();
-                            incorrectAction = true;
+                            incorrectDoubleDown = true;
                         }
-                        else if (playerAction != "h" && playerAction != "s" && playerAction != "d")
+                        else if (doubleDown != "y" && doubleDown != "n")
                         {
-                            Console.Write("\nYou Entered Your Answer Incorrectly. Please type [h], [s], or [d].\n");
-                            incorrectAction = true;
+                            Console.Write("\nYou Entered Your Answer Incorrectly. Please type [y/n].\n");
+                            Console.Write("Press Enter to try again.");
+                            Console.ReadKey();
+                            incorrectDoubleDown = true;
                         }
+                        do
+                        {
+                            incorrectAction = false;
+                            if (doubleDown == "n")
+                            {
+                                Console.Write($"\n\n{Name} What Would You Like to do?");
+                                Console.Write("\n[h] to hit or [s] to stay: ");
+                                playerAction = Console.ReadLine();
+                                playerAction.ToLower();
 
+                                if (playerAction == string.Empty)
+                                {
+                                    Console.Write("\nYou Didn't Enter an Answer. Please type [h] [s].\n");
+                                    Console.Write("Press Enter to try again.");
+                                    Console.ReadKey();
+                                    incorrectAction = true;
+                                }
+                                else if (playerAction != "h" && playerAction != "s")
+                                {
+                                    Console.Write("\nYou Entered Your Answer Incorrectly. Please type [h] or [s].\n");
+                                    Console.Write("Press Enter to try again.");
+                                    Console.ReadKey();
+                                    incorrectAction = true;
+                                }
+                            }
+                            else if(doubleDown == "y")
+                            {
+                                playerAction = "d";
+                            }
 
-                    } while (incorrectAction == true);
+                        } while (incorrectAction == true);
+
+                    } while (incorrectDoubleDown == true);
 
                     Console.WriteLine();
 
@@ -83,7 +115,7 @@ namespace Players
                             break;
                         case "d":
                             Console.Write("\nDouble Down\n");
-                            Bet = Bet * 2;
+                            DoubleDown();
                             dealer.HitPlayer(this);
                             continueActions = false;
                             Thread.Sleep(1000);
@@ -114,7 +146,7 @@ namespace Players
             else
             {
                 Console.WriteLine("Blackjack!!!");
-                Console.WriteLine("You Won Double Your Bet!!!");
+                Console.WriteLine("You Won 1.5x Your Bet!!!");
                 Thread.Sleep(1500);
             }
 
@@ -128,7 +160,6 @@ namespace Players
             Console.WriteLine($"----------------- {Name} -----------------\n");
             for (int i=0; i<5; i++)
             {
-                Console.Write("\n");
                 foreach (Card card in Hand)
                 {
                     Console.Write(card.Visual[i] + "  ");
@@ -221,7 +252,58 @@ namespace Players
             } while (incorrectEntry == true);
 
             Bet = bet;
+            Money -= bet;
             Console.Clear();
+        }
+
+        public void DoubleDown()
+        {
+            decimal bet = 0;
+            bool incorrectEntry;
+
+            do
+            {
+                incorrectEntry = false;
+                Console.WriteLine(String.Format("{0} Has {1:C2} left to bet.", Name, Money));
+                Console.WriteLine(String.Format("{0} Can Bet up to {1:C2}.", Name, Bet));
+                Console.Write($"{Name}, How Much Would You Like to add to your Bet: ");
+
+                try
+                {
+                    bet = Convert.ToInt32(Console.ReadLine());
+                }
+
+                catch (FormatException)
+                {
+                    // Tells the user what they did wrong
+                    Console.WriteLine("You Entered Your Bet Incorrectly. Don't use Letters or Special Characters.\n");
+                    incorrectEntry = true;
+
+                }
+                catch (OverflowException)
+                {
+                    Console.WriteLine("You Entered Your Bet Incorrectly. Use numbers between 1 and the Amount of your initial Bet.\n");
+                    Console.WriteLine("You must have enough Money to cover the Bet");
+                    incorrectEntry = true;
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    Console.WriteLine("You Entered Your Bet Incorrectly. Use numbers between 1 and the Amount of your initial Bet.\n");
+                    Console.WriteLine("You must have enough Money to cover the Bet");
+                    incorrectEntry = true;
+                }
+
+                if (bet < 1 || bet > Bet || bet > Money)
+                {
+                    Console.WriteLine("You Entered the Your Bet Incorrectly. Use numbers between 1 and the Amount of your initial Bet.\n");
+                    Console.WriteLine("You must have enough Money to cover the Bet");
+                    incorrectEntry = true;
+                }
+
+            } while (incorrectEntry == true);
+
+            Bet += bet;
+            Money -= bet;
         }
 
         public string GetName()
@@ -241,7 +323,7 @@ namespace Players
 
         public void Win()
         {
-            Money += Bet;
+            Money += Bet * 2;
             Console.WriteLine();
             Console.WriteLine(String.Format("{0} Won {1:C2}!", Name, Bet));
             Console.WriteLine(String.Format("{0} Total Money is now: {1:C2}", Name, Money));
@@ -259,6 +341,7 @@ namespace Players
         {
             if(IsBlackjack == true)
             {
+                Money += Bet;
                 Console.WriteLine();
                 Console.WriteLine($"{Name} and the Dealer both hit Blackjack");
                 Console.WriteLine($"{Name}'s Bet was Returned");
@@ -266,6 +349,7 @@ namespace Players
             }
             else
             {
+                Money += Bet;
                 Console.WriteLine();
                 Console.WriteLine($"{Name} and the Dealer both stayed on the Same Card Total");
                 Console.WriteLine($"{Name}'s Bet was Returned");
@@ -283,7 +367,7 @@ namespace Players
 
         public void BlackJack()
         {
-            Money += (Bet * (decimal)1.5);
+            Money += (Bet * (decimal)2.5);
             Console.WriteLine();
             Console.WriteLine("Blackjack!");
             Console.WriteLine(String.Format("{0} Won {1:C2}!", Name, Bet * (decimal)1.5));

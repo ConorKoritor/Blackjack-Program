@@ -96,6 +96,11 @@ namespace Decks
             Visual = CreateCardVisual();
         }
 
+        public string GetSymbol()
+        {
+            return Symbol;
+        }
+
         public override string ToString()
         {
             string card = $"{Symbol} of {Suit}";

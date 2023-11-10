@@ -53,6 +53,20 @@ namespace Players
                 Shoe._shuffledCardsInShoe.RemoveAt(0);
             }
 
+            foreach(Player p in _playersInGame)
+            {
+                //Checks if the player can split and if they want to
+                p.CheckSplit();
+
+                if(p.IsSplit == true)
+                {
+                    p.Hand.Add(Shoe._shuffledCardsInShoe[0]);
+                    Shoe._shuffledCardsInShoe.RemoveAt(0);
+                    p.SplitHand.Add(Shoe._shuffledCardsInShoe[0]);
+                    Shoe._shuffledCardsInShoe.RemoveAt(0);
+                }
+            }
+
             //This checks if the Dealer has hit a blackjack off the initial deal
             CheckBlackjack();
             if (IsBlackjack == false)
@@ -77,16 +91,25 @@ namespace Players
         }
 
         //Hit player is called whenever the player asks for a hit
-        public void HitPlayer(Player player)
+        public void HitPlayer(Player player, int i)
         {
-            /*When the player hits it adds the top card
-             * in the shoe to the players hand
-             * and then removes that card from the shoe
-             * This method takes in the player that hit
-             * so it deals to the right player
-             */
-            player.Hand.Add(Shoe._shuffledCardsInShoe[0]);
-            Shoe._shuffledCardsInShoe.RemoveAt(0);
+            //Checks if the player has split their hand
+            if (i == 0)
+            {
+                /*When the player hits it adds the top card
+                 * in the shoe to the players hand
+                 * and then removes that card from the shoe
+                 * This method takes in the player that hit
+                 * so it deals to the right player
+                 */
+                player.Hand.Add(Shoe._shuffledCardsInShoe[0]);
+                Shoe._shuffledCardsInShoe.RemoveAt(0);
+            }
+            else if(i == 1)
+            {
+                player.SplitHand.Add(Shoe._shuffledCardsInShoe[0]);
+                Shoe._shuffledCardsInShoe.RemoveAt(0);
+            }
 
             //Program displays the card and bet after the hit
             player.DisplayHand();

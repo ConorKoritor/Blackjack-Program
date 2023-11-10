@@ -126,6 +126,7 @@ namespace BlackJackProgram
                 foreach (Player p in _playerList)
                 {
                     p.CheckBlackjack();
+                    p.SplitCheckBlackjack();
                 }
                 //If the dealer hit blackjack it immediately goes to
                 //Check for winners as no game actions have to be taken
@@ -172,6 +173,7 @@ namespace BlackJackProgram
             Console.Clear();
             foreach (Player p in _playerList)
             {
+                Console.Clear();
                 count++;
 
                 //Runs through each player and checks multiple parameters to see if they won/lost/or pushed
@@ -216,7 +218,6 @@ namespace BlackJackProgram
                         p.Push();
                     }
                 }
-
                 //If player got blackjack check if the total is equal to the dealer which will result in a push
                 //or if the player got uncontested balckjack which will result in a win of 1.5x the bet
                 else
@@ -230,15 +231,71 @@ namespace BlackJackProgram
                         p.BlackJack();
                     }
                 }
-                
-                
+
+                if (p.IsSplit == true)
+                {
+
+                    if (p.SplitIsBlackjack == false)
+                    {
+
+                        if (p.SplitIsBust == true)
+                        {
+                            //Checks if the player has bust, displays a message saying they have, and then calls that players lose method
+                            Console.WriteLine(p.GetName() + " Lost From Bust");
+                            p.SplitLose();
+                        }
+
+                        else if (_dealer.IsBust == true)
+                        {
+                            //Checks if the dealer has bust, displays a message saying they have, and then calls that players win method
+                            Console.WriteLine(p.GetName() + " Won From Dealer Bust");
+                            p.SplitWin();
+                        }
+                        else if (p.SplitGetCardTotal() < _dealer.GetCardTotal())
+                        {
+                            //Checks if player stayed with a total less than the dealers, displays a message that they have
+                            //and calls that players lose method
+                            Console.WriteLine(p.GetName() + " Lost");
+                            p.SplitLose();
+                        }
+                        else if (p.SplitGetCardTotal() > _dealer.GetCardTotal())
+                        {
+                            //Checks if player stayed with a total less than the dealers, displays a message that they have
+                            //and calls that players lose method
+                            Console.WriteLine(p.GetName() + " Won");
+                            p.SplitWin();
+                        }
+                        else if (p.SplitGetCardTotal() == _dealer.GetCardTotal())
+                        {
+                            //Checks if player stayed with a total equal to the dealers, displays a message that they have
+                            //and calls that players lose method
+                            p.SplitPush();
+                        }
+                    }
+
+                    //If player got blackjack check if the total is equal to the dealer which will result in a push
+                    //or if the player got uncontested balckjack which will result in a win of 1.5x the bet
+                    else
+                    {
+                        if (p.SplitGetCardTotal() == _dealer.GetCardTotal())
+                        {
+                            p.SplitPush();
+                        }
+                        else
+                        {
+                            p.SplitBlackJack();
+                        }
+                    }
+                }
+
+
+
                 //Checks if their is more than one player so that it can ask the user to press enter to continue 
                 //to the next players results
                 if (_playerList.Count > 1 && count < _playerList.Count)
                 {
                     Console.WriteLine("\nPress Enter to see next players Result");
                     Console.ReadKey();
-                    Console.Clear();
                 }
                 
             }
@@ -248,6 +305,8 @@ namespace BlackJackProgram
                 //Checks if the player has run out of money
                 //if they have it calls thagt players cash out method
                 //and removes them from the list of players
+                Console.Clear();
+
                 if (p.GetMoney() <= 0)
                 {
                     Console.WriteLine($"{p.GetName()} Is out of Money");

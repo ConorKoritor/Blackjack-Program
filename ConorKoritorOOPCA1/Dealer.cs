@@ -14,6 +14,9 @@ namespace Players
     internal class Dealer : Player
     {
         private Shoe Shoe { get; set; }
+
+        //takes ina  list of players so the dealer can deal to multiple players
+        //allowing multiplayer
         private List<Player> _playersInGame {get; set;}
 
         public Dealer(Shoe shoe, List<Player> players) : base(0, "Dealer")

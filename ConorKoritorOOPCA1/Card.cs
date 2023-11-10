@@ -23,6 +23,8 @@ namespace Decks
             Symbol = symbol;
             Suit = suit;
 
+            //Code initally had unicode symbols for each suit
+            //Switchs through the suits and sets the pip to match the suit
             switch (suit){
                 case "Hearts":
                     Pip = "H";
@@ -41,14 +43,18 @@ namespace Decks
                     break;
             }
 
+            //Creates the visual of the card that will be dsiplayed to the screen
             Visual = CreateCardVisual();
 
         }
 
         public string[] CreateCardVisual()
         {
+            //the card visual is constructed of strings in an array that represent each line that must be drawn
+            //Program checks if the card is supposed to be visible
             if(IsVisible)
             {
+                //If it is visible it shows the face of the card which has the pip and the symbol
                 string[] CardVisual =
                 {
                     "╔══════╗",
@@ -61,6 +67,7 @@ namespace Decks
             }
             else
             {
+                //If it isn't visible it shows the back of the card
                 string[] CardVisual = 
                 {
                     "╔══════╗",
@@ -77,12 +84,14 @@ namespace Decks
 
         public void MakeVisible()
         {
+            //When make visible is run it recreates the card visual with the Is visible bool set to true
             IsVisible = true;
             Visual = CreateCardVisual();
         }
 
         public void MakeNotVisible()
         {
+            //When make not visible is run it recreates the card visual with the Is visible bool set to false
             IsVisible = false;
             Visual = CreateCardVisual();
         }

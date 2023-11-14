@@ -206,7 +206,8 @@ namespace Players
                 {
                     Console.Write(card.Visual[i] + "  ");
                 }
-                
+
+                Console.WriteLine();
             }
             Console.WriteLine($"\nTotal Value of Hand: {CardTotal}\n");
         }

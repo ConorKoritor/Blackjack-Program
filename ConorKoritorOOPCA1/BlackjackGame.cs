@@ -305,6 +305,11 @@ namespace BlackJackProgram
 
                 Console.Clear();
 
+                foreach(Player p in _playerList)
+                {
+                    p.MakeBet();
+                }
+
                 DealerActions();
             }  
         }

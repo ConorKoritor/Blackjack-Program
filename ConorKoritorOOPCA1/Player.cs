@@ -33,6 +33,7 @@ namespace Players
 
             string playerAction = "";
             string doubleDown = "";
+            bool hasAskedForDoubleDown = false;
             bool incorrectAction;
             bool incorrectDoubleDown;
             bool continueActions;
@@ -56,28 +57,32 @@ namespace Players
                      * The loop runs again if they have*/
                     do
                     {
+
                         incorrectDoubleDown = false;
-
-                        //Asks the player if they want to double down after the initial cards have been dealt
-                        Console.Write($"\n\n{Name} Would You Like to Double Down [y,n]?: ");
-                        doubleDown = Console.ReadLine();
-                        doubleDown.ToLower();
-
-                        //Checks if the player has entered anything
-                        if (doubleDown == string.Empty)
+                        if (hasAskedForDoubleDown == false)
                         {
-                            Console.Write("\nYou Didn't Enter an Answer. Please type [y/n].\n");
-                            Console.Write("Press Enter to try again.");
-                            Console.ReadKey();
-                            incorrectDoubleDown = true;
-                        }
-                        //checks if the player entered in the correct format
-                        else if (doubleDown != "y" && doubleDown != "n")
-                        {
-                            Console.Write("\nYou Entered Your Answer Incorrectly. Please type [y/n].\n");
-                            Console.Write("Press Enter to try again.");
-                            Console.ReadKey();
-                            incorrectDoubleDown = true;
+
+                            //Asks the player if they want to double down after the initial cards have been dealt
+                            Console.Write($"\n\n{Name} Would You Like to Double Down [y,n]?: ");
+                            doubleDown = Console.ReadLine();
+                            doubleDown.ToLower();
+
+                            //Checks if the player has entered anything
+                            if (doubleDown == string.Empty)
+                            {
+                                Console.Write("\nYou Didn't Enter an Answer. Please type [y/n].\n");
+                                Console.Write("Press Enter to try again.");
+                                Console.ReadKey();
+                                incorrectDoubleDown = true;
+                            }
+                            //checks if the player entered in the correct format
+                            else if (doubleDown != "y" && doubleDown != "n")
+                            {
+                                Console.Write("\nYou Entered Your Answer Incorrectly. Please type [y/n].\n");
+                                Console.Write("Press Enter to try again.");
+                                Console.ReadKey();
+                                incorrectDoubleDown = true;
+                            }
                         }
                         do
                         {
@@ -89,6 +94,7 @@ namespace Players
                                 Console.Write("\n[h] to hit or [s] to stay: ");
                                 playerAction = Console.ReadLine();
                                 playerAction.ToLower();
+                                hasAskedForDoubleDown = true;
 
                                 //Checks if the player has entered anything
                                 if (playerAction == string.Empty)
